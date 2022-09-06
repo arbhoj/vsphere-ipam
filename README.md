@@ -7,6 +7,11 @@ https://github.com/spectrocloud/cluster-api-provider-vsphere-static-ip.git
 
 ## Requirements
 1. Cluster API (CAPI) management K8s cluster
+> For a [DKP](https://docs.d2iq.com/dkp/2.3 cluster this can be done by running the following commands
+```
+unset KUBECONFIG
+dkp create bootstrap
+```
 2. Usable Pool of IP Addresses
 
 ## Steps
