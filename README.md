@@ -21,7 +21,7 @@ Deploy metal3 ipam components to the CAPI cluster
 ```
 kubectl create -f metal3ipam/provider-components/core-components.yaml
 ```
-> This will create CRD's like ippool, ipaddresses and ipclaims along with the `ipam-controller-manager` deployment for the controller. It uses the `quay.io/metal3-io/ip-address-manager:main` image. Change the deployment spec to point to a local image registry for airgapped environments
+> This will create CRD's like ippool, ipaddresses and ipclaims along with the `ipam-controller-manager` deployment for the controller. It uses the `quay.io/metal3-io/ip-address-manager:main` image. Download, retag and push the images to a local registry and change the deployment spec to point to a local image registry for airgapped environments
 
 ### Step 2:
 Deploy the vsphere ipam adapter
@@ -29,7 +29,7 @@ Deploy the vsphere ipam adapter
 ```
 kubectl apply -f spectro-ipam-adapter/install.yaml
 ```
->This will create the ipam adapter deployment for capv in the capv-system namespace with the required RBAC. It uses the `gcr.io/spectro-images-public/release/capv-static-ip:latest`image. Change the deployment spec to point to a local image registry for airgapped environments
+>This will create the ipam adapter deployment for capv in the capv-system namespace with the required RBAC. It uses `gcr.io/spectro-images-public/release/capv-static-ip:latest` and `gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0` images. Download, retag and push the images to a local registry and change the deployment spec to point to a local image registry for airgapped environments
 
 ### Step 3:
 Define the IP Address range for the cluster being provisioned
