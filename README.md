@@ -19,7 +19,7 @@ dkp create bootstrap
 Deploy metal3 ipam components to the CAPI cluster
 
 ```
-kubectl create -f metal3ipam/provider-components/core-components.yaml
+kubectl create -f metal3ipam/provider-components/infrastructure-components.yaml
 ```
 > This will create CRD's like ippool, ipaddresses and ipclaims along with the `ipam-controller-manager` deployment for the controller. It uses the `quay.io/metal3-io/ip-address-manager:main` image. Download, retag and push the images to a local registry and change the deployment spec to point to a local image registry for airgapped environments
 
