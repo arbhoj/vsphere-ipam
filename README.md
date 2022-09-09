@@ -127,7 +127,7 @@ Deploy the cluster by deploying the resources defined in the manifest to the CAP
 
 e.g.
 ```
-kubectl apply -f dkp-cluster.yaml
+kubectl create -f dkp-cluster.yaml
 ```
 
 This will deploy a vSphere cluster with the IP's from the range specified in the IPPOOL resource instead of randomly picking an IP from DHCP. 
