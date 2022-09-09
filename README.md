@@ -44,7 +44,7 @@ Define the IP Address range for the cluster being provisioned
 ```
 export CLUSTER_NAME=dkp-demo
 export NETWORK_NAME=Public #This is the name of the network to be used in vSphere
-export START_IP=15.235.38.171
+export START_IP=15.235.38.172
 export END_IP=15.235.38.176
 export CIDR=27
 export GATEWAY=15.235.38.190
