@@ -49,6 +49,7 @@ export END_IP=15.235.38.176
 export CIDR=27
 export GATEWAY=15.235.38.190
 export DNS_SERVER=8.8.8.8
+
 kubectl apply -f - <<EOF
 apiVersion: ipam.metal3.io/v1alpha1
 kind: IPPool
@@ -66,7 +67,8 @@ spec:
       gateway: ${GATEWAY}
   prefix: 27
   gateway: ${GATEWAY}
-  dnsServers: [${DNS_SERVER}] 
+  dnsServers: [${DNS_SERVER}]
+ EOF 
 ```
 >Change the IP Pool name, network-name label and ip address pool, gateway and dnsServer details as required.
 
