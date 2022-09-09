@@ -101,7 +101,7 @@ metadata:
   name: dkp-cluster-control-plane
   namespace: default
   labels:
-    cluster.x-k8s.io/ip-pool-name: dkp-cluster
+    cluster.x-k8s.io/ip-pool-name: ${CLUSTER_NAME}-pool
 spec:
   template:
     spec:
