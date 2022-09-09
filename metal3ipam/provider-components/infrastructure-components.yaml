@@ -503,6 +503,11 @@ spec:
       status: {}
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: capm3-system
+---
+apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:

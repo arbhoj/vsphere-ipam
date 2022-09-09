@@ -14,6 +14,11 @@ dkp create bootstrap
 ```
 2. Usable Pool of IP Addresses
 
+>The following images are used. Pull them, retag and push to local registry for an airgapped deployment and updated the manifests to reflect the same
+> - quay.io/metal3-io/ip-address-manager:main
+> - arvindbhoj/capv-static-ip:1.0.0 #This can also be built from scratch from https://github.com/spectrocloud/cluster-api-provider-vsphere-static-ip.git 
+> - gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
+
 ## Steps
 ### Step 1:
 Deploy metal3 ipam components to the CAPI cluster
@@ -27,37 +32,47 @@ kubectl create -f metal3ipam/provider-components/infrastructure-components.yaml
 Deploy the vsphere ipam adapter
 
 ```
-kubectl apply -f spectro-ipam-adapter/install.yaml
+kubectl create -f spectro-ipam-adapter/install.yaml
 ```
->This will create the ipam adapter deployment for capv in the capv-system namespace with the required RBAC. It uses `gcr.io/spectro-images-public/release/capv-static-ip:latest` and `gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0` images. Download, retag and push the images to a local registry and change the deployment spec to point to a local image registry for airgapped environments
+>This will create the ipam adapter deployment for capv in the capv-system namespace with the required RBAC. It uses `arvindbhoj/capv-static-ip:1.0.0` and `gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0` images. Download, retag and push the images to a local registry and change the deployment spec to point to a local image registry for airgapped environments
 
 ### Step 3:
 Define the IP Address range for the cluster being provisioned
 
+>Note: The following is using examples to make it easier to explain what sample values would look like. Modify these as required.
+
 ```
+export CLUSTER_NAME=dkp-demo
+export NETWORK_NAME=Public #This is the name of the network to be used in vSphere
+export START_IP=15.235.38.171
+export END_IP=15.235.38.176
+export CIDR=27
+export GATEWAY=15.235.38.190
+export DNS_SERVER=8.8.8.8
 kubectl apply -f - <<EOF
 apiVersion: ipam.metal3.io/v1alpha1
 kind: IPPool
 metadata:
-  name: dkp-cluster
+  name: ${CLUSTER_NAME}-pool
   labels:
-    cluster.x-k8s.io/network-name: Public
+    cluster.x-k8s.io/network-name: ${NETWORK_NAME}
 spec:
-  clusterName: dkp-cluster
-  namePrefix: dkp-cluster-prov
+  clusterName: ${CLUSTER_NAME}
+  namePrefix: ${CLUSTER_NAME}-prov
   pools:
-    - start: 15.235.38.171
-      end: 15.235.38.176
-      prefix: 27
-      gateway: 15.235.38.190
+    - start: ${START_IP}
+      end: ${END_IP}
+      prefix: ${CIDR}
+      gateway: ${GATEWAY}
   prefix: 27
-  gateway: 15.235.38.190
-  dnsServers: [8.8.8.8] 
+  gateway: ${GATEWAY}
+  dnsServers: [${DNS_SERVER}] 
 ```
 >Change the IP Pool name, network-name label and ip address pool, gateway and dnsServer details as required.
 
 ### Step 4:
 Generate the manifests for deploying a vSphere cluster via cluster api. This would be something like this for a [DKP](https://docs.d2iq.com/dkp/2.3/create-new-vsphere-cluster) cluster. 
+>Note: The following example is deploying kube-vip to manage the control plane vip and binding it to eth0 interface. If control plane VIP is being managed by an external LB/Proxy, open the generated manifest and delete the kube-vip deployment spec from under the files section of kubeadmcontrolplane. 
 ```
 export CLUSTER_NAME=dkp-cluster
 export NETWORK=Public
@@ -69,7 +84,7 @@ export VCENTER=vcenter_host
 export SSH_PUB_KEY=path_to_ssh_public_key
 export RESOURCE_POOL=vcenter_resource_pool_name
 export VCENTER_TEMPLATE=capi_compatible_os_template
-dkp create cluster vsphere --cluster-name=${CLUSTER_NAME} --network=${NETWORK} --control-plane-endpoint-host=${CONTROL_PLANE_ENDPOINT} --data-center=${DATACENTER} --data-store=${DATASTORE} --folder=${VM_FOLDER} --server=${VCENTER} --ssh-public-key-file=${SSH_PUB_KEY} --resource-pool=${RESOURCE_POOL} --vm-template=${VCENTER_TEMPLATE} --dry-run -o yaml > dkp-cluster.yaml
+dkp create cluster vsphere --cluster-name=${CLUSTER_NAME} --network=${NETWORK} --control-plane-endpoint-host=${CONTROL_PLANE_ENDPOINT} --data-center=${DATACENTER} --data-store=${DATASTORE} --folder=${VM_FOLDER} --server=${VCENTER} --ssh-public-key-file=${SSH_PUB_KEY} --resource-pool=${RESOURCE_POOL} --vm-template=${VCENTER_TEMPLATE} --virtual-ip-interface=eth0 --dry-run -o yaml > dkp-cluster.yaml
 ```
 
 In the cluster deployment manifest, update the VsphereMachineTemplate resource for the set of nodes that are to source the IP from the defined pool as shown below:
