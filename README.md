@@ -76,7 +76,7 @@ EOF
 Generate the manifests for deploying a vSphere cluster via cluster api. This would be something like this for a [DKP](https://docs.d2iq.com/dkp/2.3/create-new-vsphere-cluster) cluster. 
 >Note: The following example is deploying kube-vip to manage the control plane vip and binding it to eth0 interface. If control plane VIP is being managed by an external LB/Proxy, open the generated manifest and delete the kube-vip deployment spec from under the files section of kubeadmcontrolplane. 
 ```
-export CLUSTER_NAME=dkp-cluster
+export CLUSTER_NAME=dkp-demo
 export NETWORK=Public
 export CONTROL_PLANE_ENDPOINT=xxx.xxx.xxx.xxx
 export DATACENTER=dc1
