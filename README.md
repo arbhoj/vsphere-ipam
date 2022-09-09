@@ -68,7 +68,7 @@ spec:
   prefix: 27
   gateway: ${GATEWAY}
   dnsServers: [${DNS_SERVER}]
-EOF 
+EOF
 ```
 >Change the IP Pool name, network-name label and ip address pool, gateway and dnsServer details as required.
 
