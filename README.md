@@ -48,7 +48,7 @@ export START_IP=15.235.38.171
 export END_IP=15.235.38.176
 export CIDR=27
 export GATEWAY=15.235.38.190
-export DNS_SERVER=8.8.8.8
+export DNS_SERVER=8.8.8.8,8.8.4.4
 
 kubectl apply -f - <<EOF
 apiVersion: ipam.metal3.io/v1alpha1
